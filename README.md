@@ -8,7 +8,7 @@
 
 ```
 
-##　フォームの値の取り方
+## フォームの値の取り方
 - event.target.value
 - if文の使い方
 ```js
@@ -68,3 +68,60 @@ handleQuestionChange(e){
 </form>
 </span>
 ```
+
+## firebase連携
+- コンソール画面から登録
+- ※Databaesの項目からルールに入り
+```
+{
+  "rules": {
+    ".read": true,
+    ".write": true
+  }
+}
+//これにして書き込み権限を変更する
+```
+- `npm install --save firebase uuid`をインストール
+-　※新しいものをいれてビルドこけるときは`npm i`で再度インストールすると通るっぽい
+```js
+//これをidのthis.stte = {id:id}にセット
+var uuid = require('uuid');
+var firebase = require('firebase');
+
+//firebaseのウェブアプリところをクリックしてスクリプトを出してこれを紐づける
+var config = {
+    apiKey: "AIzaSyBbR0mvdx9MTFykRKFhAPWfYrEAV2LT_vA",
+    authDomain: "fir-survery.firebaseapp.com",
+    databaseURL: "https://fir-survery.firebaseio.com",
+    projectId: "fir-survery",
+    storageBucket: "fir-survery.appspot.com",
+    messagingSenderId: "75020075860"
+  };
+  firebase.initializeApp(config);
+
+
+```
+
+- firebaseDBへデータを入れる
+```js
+handleQuestionSubmit(e){
+  console.log('Quesitions sumibtting...');
+  //ここでdetabase()関数をref('オブジェクトの階層名'+ this.state.idでキーを設定) そしてname: ,answersに各値を代入
+  firebase.database().ref('surveys/' + this.state.id).set({
+    name: this.state.name,
+    answers: this.state.answers
+  });
+  this.setState({submitted: true}, function() {
+      console.log('Quesitions submitted...');
+  });
+  e.preventDefault();
+}
+
+```
+
+- inputはサブミットされないとデータ送れないので注意
+- `<input type="submit" value="Submit" />`抜けてて送れなかったので
+
+## まとめ
+- inputのサブミット忘れ注意（たぶんじぶんだけ笑）
+- firebase連携は意外と簡単,構文になれる`firebase.database().ref('surveys/' + this.state.id).set({xxx: xxx, xxx: xxx})`
